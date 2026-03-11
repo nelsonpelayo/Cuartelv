@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Cuartel V - Zona III</title>
@@ -18,110 +18,106 @@
 <style>
 
 html, body, #map {
-width:100%;
-height:100%;
-padding:0;
-margin:0;
-background-color:#ffffff;
+width: 100%;
+height: 100%;
+padding: 0;
+margin: 0;
+background-color: #ffffff;
 }
 
 /* TITULO */
 
-#titulo-mapa{
-position:absolute;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-z-index:1000;
-font-family:Arial, Gadget, sans-serif;
-font-size:32px;
-color:#000000;
-text-align:center;
-text-shadow:2px 2px 5px rgba(255,255,255,0.8);
-pointer-events:none;
+#titulo-mapa {
+position: absolute;
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 1000;
+font-family: Arial, Gadget, sans-serif;
+font-size: 32px;
+color: #000000;
+text-align: center;
+text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
+pointer-events: none;
 }
 
 /* LOGO */
 
-#logo-institucional{
-position:absolute;
-top:10px;
-right:10px;
-z-index:1002;
-height:60px;
-width:auto;
-pointer-events:none;
+#logo-institucional {
+position: absolute;
+top: 10px;
+right: 10px;
+z-index: 1002;
+height: 60px;
+width: auto;
+pointer-events: none;
 }
 
 /* FLECHA NORTE */
 
 #flecha-norte{
 position:absolute;
-top:100px;
+top:90px;
 right:10px;
-width:60px;
-height:60px;
-z-index:1100;
-background-image:url("https://upload.wikimedia.org/wikipedia/commons/e/ec/North_arrow.svg");
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
+width:55px;
+height:55px;
+z-index:999;
 pointer-events:none;
 transition:transform 0.2s linear;
 }
 
 /* LEYENDA */
 
-.layer-switcher{
-margin-top:90px !important;
-padding-top:0 !important;
+.layer-switcher {
+margin-top: 90px !important;
+padding-top: 0 !important;
 }
 
-.layer-switcher ul{
-padding-top:0 !important;
-margin-top:20px !important;
+.layer-switcher ul {
+padding-top: 0 !important;
+margin-top: 20px !important;
 }
 
-.layer-switcher ul::before{
-content:"Referencias";
-display:block;
-font-family:Arial, sans-serif;
-font-weight:bold;
-font-size:25px;
-color:#333;
-text-align:center;
-border-bottom:2px solid #eee;
-position:relative;
-top:-10px;
-padding:0 5px 10px 5px;
-margin-bottom:0px;
+.layer-switcher ul::before {
+content: "Referencias";
+display: block;
+font-family: Arial, sans-serif;
+font-weight: bold;
+font-size: 25px;
+color: #333;
+text-align: center;
+border-bottom: 2px solid #eee;
+position: relative;
+top: -10px;
+padding: 0 5px 10px 5px;
+margin-bottom: 0px;
 }
 
 /* PIE */
 
-#pie-direccion{
-position:absolute;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-z-index:1000;
-font-family:Arial, sans-serif;
-font-size:20px;
-color:#888888;
-text-align:center;
-text-shadow:1px 1px 2px rgba(255,255,255,0.6);
-pointer-events:none;
+#pie-direccion {
+position: absolute;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 1000;
+font-family: Arial, sans-serif;
+font-size: 20px;
+color: #888888;
+text-align: center;
+text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
+pointer-events: none;
 }
 
 /* CONTROLES */
 
-.ol-control{
-background-color:rgba(255,255,255,.4) !important;
-padding:2px !important;
+.ol-control {
+background-color: rgba(255,255,255,.4) !important;
+padding: 2px !important;
 }
 
 /* ============================= */
-/* MOVIL */
+/* AJUSTES SOLO PARA MOVIL */
 /* ============================= */
 
 @media screen and (max-width:768px){
@@ -161,12 +157,10 @@ height:34px;
 font-size:16px;
 }
 
-/* flecha mas chica */
-
 #flecha-norte{
-width:45px;
-height:45px;
-top:70px;
+width:40px;
+height:40px;
+top:60px;
 right:5px;
 }
 
@@ -190,7 +184,7 @@ Cuartel V - Zona III
 Dirección General de Proyectos de Hábitat, Vivienda e Integración Urbana
 </div>
 
-<div id="flecha-norte"></div>
+<img id="flecha-norte" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/North_arrow.svg">
 
 <div id="map">
 
@@ -227,13 +221,11 @@ Dirección General de Proyectos de Hábitat, Vivienda e Integración Urbana
 
 <script>
 
-/* ESPERAR A QUE EL MAPA EXISTA */
+/* ROTAR FLECHA NORTE */
 
 window.addEventListener("load",function(){
 
-/* ROTACION DE FLECHA */
-
-map.getView().on("change:rotation",function(){
+map.getView().on('change:rotation',function(){
 
 var rotation = map.getView().getRotation();
 var grados = rotation * (180 / Math.PI);
@@ -243,9 +235,13 @@ document.getElementById("flecha-norte").style.transform =
 
 });
 
-/* AJUSTE MOVIL */
+});
 
-if(window.innerWidth <= 768){
+/* AJUSTE MOVIL ORIGINAL */
+
+function ajustarMapaMovil(){
+
+if (window.innerWidth <= 768){
 
 var view = map.getView();
 
@@ -257,10 +253,14 @@ view.setCenter(center);
 
 }
 
-});
+}
+
+window.addEventListener("load", ajustarMapaMovil);
 
 </script>
 
 </body>
 </html>
+
+
 
