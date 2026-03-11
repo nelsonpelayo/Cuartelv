@@ -1,159 +1,268 @@
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-        <title>Cuartel V - Zona III</title>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Cuartel V - Zona III</title>
 
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-        
-        <style>
-        html, body, #map {
-            width: 100%; height: 100%; padding: 0; margin: 0; background-color: #ffffff;
-        }
+<link rel="stylesheet" href="./resources/ol.css">
+<link rel="stylesheet" href="resources/fontawesome-all.min.css">
+<link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+<link rel="stylesheet" href="./resources/qgis2web.css">
 
-        #titulo-mapa {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            font-family: 'Arial', sans-serif;
-            font-size: 32px; 
-            color: #000000;
-            text-align: center;
-            text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
-            pointer-events: none;
-        }
+<style>
 
-        #logo-institucional {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1002;
-            height: 60px;
-            width: auto;
-            pointer-events: none;
-        }
+html, body, #map {
+width: 100%;
+height: 100%;
+padding: 0;
+margin: 0;
+background-color: #ffffff;
+}
 
-        /* --- LEYENDA Y REFERENCIAS --- */
-        .layer-switcher {
-            margin-top: 90px !important;
-            padding-top: 0 !important;   
-        }
+/* TITULO */
 
-        .layer-switcher ul {
-            padding-top: 0 !important;
-            margin-top: 20px !important; 
-        }
+#titulo-mapa {
+position: absolute;
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 1000;
+font-family: Arial, Gadget, sans-serif;
+font-size: 32px;
+color: #000000;
+text-align: center;
+text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
+pointer-events: none;
+}
 
-        .layer-switcher ul::before {
-            content: "Referencias";
-            display: block;
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-            font-size: 25px;
-            color: #333;
-            text-align: center;
-            border-bottom: 2px solid #eee;
-            position: relative;
-            top: -10px; 
-            padding: 0 5px 10px 5px;
-            margin-bottom: 0px;
-        }
+/* LOGO */
 
-        /* --- SECCIÓN PARA TOQUETEAR LA BRÚJULA --- */
-        .ol-rotate {
-            /* AJUSTÁ ESTOS DOS VALORES PARA MOVERLA */
-            top: 150px !important;   /* Cuanto más grande el número, más abajo va */
-            right: 20px !important;  /* Cuanto más grande el número, más a la izquierda va */
-            
-            background: none !important; 
-            border: none !important;
-            z-index: 1001;
-        }
+#logo-institucional {
+position: absolute;
+top: 10px;
+right: 10px;
+z-index: 1002;
+height: 60px;
+width: auto;
+pointer-events: none;
+}
 
-        .ol-rotate button {
-            background: none !important;
-            color: #333 !important;
-            font-size: 30px !important; /* Tamaño del icono */
-            cursor: pointer !important;
-            text-shadow: 1px 1px 2px white;
-        }
+/* FLECHA NORTE */
 
-        #pie-direccion {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            font-family: 'Arial', sans-serif;
-            font-size: 20px;
-            color: #888888;
-            text-align: center;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
-            pointer-events: none;
-        }
+#flecha-norte{
+position:absolute;
+top:100px;
+right:10px;
+z-index:1100;
+width:60px;
+height:60px;
+background-image:url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/North_arrow.svg/200px-North_arrow.svg.png");
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+pointer-events:none;
+transition: transform 0.2s linear;
+}
 
-        .ol-control { background-color: rgba(255,255,255,.4) !important; padding: 2px !important; } 
-        </style>
-    </head>
+/* LEYENDA */
 
-    <body>
-        <img id="logo-institucional" src="2026logo.png" alt="Logo Moreno IDUAR">
-        <div id="titulo-mapa"><strong>Calles Nombradas en Honor a los Desaparecidos</strong></div>
-        <div id="pie-direccion">Dirección General de Proyectos de Hábitat, Vivienda e Integración Urbana</div>
-        
-        <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
-        </div>
+.layer-switcher {
+margin-top: 90px !important;
+padding-top: 0 !important;
+}
 
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol-layerswitcher.js"></script>
-        <script src="resources/photon-geocoder-autocomplete.min.js"></script>
-        <script src="layers/Reserva_Equipamientos_3.js"></script>
-        <script src="layers/moreno_limite_4.js"></script>
-        <script src="layers/BarriosPopulares_5.js"></script>
-        <script src="layers/CallesMloreno_6.js"></script>
-        <script src="layers/CursodeAgua_7.js"></script>
-        <script src="layers/CallesNombradasenHonoraLosDesaparecidos_8.js"></script>
-        <script src="styles/Reserva_Equipamientos_3_style.js"></script>
-        <script src="styles/moreno_limite_4_style.js"></script>
-        <script src="styles/BarriosPopulares_5_style.js"></script>
-        <script src="styles/CallesMloreno_6_style.js"></script>
-        <script src="styles/CursodeAgua_7_style.js"></script>
-        <script src="styles/CallesNombradasenHonoraLosDesaparecidos_8_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/Autolinker.min.js"></script>
-        <script src="./resources/qgis2web.js"></script>         
+.layer-switcher ul {
+padding-top: 0 !important;
+margin-top: 20px !important;
+}
 
-        <script>
-            // Esperamos a que la página cargue totalmente para evitar pantalla blanca
-            window.addEventListener('load', function() {
-                if (typeof map !== 'undefined') {
-                    // Usamos un icono de FontAwesome (flecha de navegación)
-                    var icon = document.createElement('i');
-                    icon.className = 'fas fa-location-arrow'; 
-                    
-                    var north = new ol.control.Rotate({
-                        autoHide: false,
-                        label: icon,
-                        tipLabel: 'Resetear Norte'
-                    });
-                    map.addControl(north);
-                }
-            });
-        </script>
-    </body>
+.layer-switcher ul::before {
+content: "Referencias";
+display: block;
+font-family: Arial, sans-serif;
+font-weight: bold;
+font-size: 25px;
+color: #333;
+text-align: center;
+border-bottom: 2px solid #eee;
+position: relative;
+top: -10px;
+padding: 0 5px 10px 5px;
+margin-bottom: 0px;
+}
+
+/* PIE */
+
+#pie-direccion {
+position: absolute;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 1000;
+font-family: Arial, sans-serif;
+font-size: 20px;
+color: #888888;
+text-align: center;
+text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
+pointer-events: none;
+}
+
+/* CONTROLES */
+
+.ol-control {
+background-color: rgba(255,255,255,.4) !important;
+padding: 2px !important;
+}
+
+/* ============================= */
+/* AJUSTES SOLO PARA MOVIL */
+/* ============================= */
+
+@media screen and (max-width:768px){
+
+#logo-institucional{
+height:15px;
+top:5px;
+right:5px;
+}
+
+#titulo-mapa{
+font-size:15px;
+top:6px;
+width:65%;
+left:40%;
+transform:translateX(-40%);
+line-height:1.2;
+}
+
+#pie-direccion{
+font-size:11px;
+bottom:40px;
+width:90%;
+}
+
+.layer-switcher{
+left:5px !important;
+margin-top:55px !important;
+font-size:12px;
+max-height:60vh;
+overflow-y:auto;
+}
+
+.ol-control button{
+width:34px;
+height:34px;
+font-size:16px;
+}
+
+/* FLECHA MAS CHICA */
+
+#flecha-norte{
+width:45px;
+height:45px;
+top:70px;
+right:5px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<img id="logo-institucional" src="2026logo.png" alt="Logo Moreno IDUAR">
+
+<div id="titulo-mapa">
+<strong>
+Calles Nombradas en Honor a los Desaparecidos<br>
+Cuartel V - Zona III
+</strong>
+</div>
+
+<div id="pie-direccion">
+Dirección General de Proyectos de Hábitat, Vivienda e Integración Urbana
+</div>
+
+<div id="flecha-norte"></div>
+
+<div id="map">
+
+<div id="popup" class="ol-popup">
+<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+<div id="popup-content"></div>
+</div>
+
+</div>
+
+<script src="resources/qgis2web_expressions.js"></script>
+<script src="./resources/functions.js"></script>
+<script src="./resources/ol.js"></script>
+<script src="./resources/ol-layerswitcher.js"></script>
+<script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+<script src="layers/Reserva_Equipamientos_3.js"></script>
+<script src="layers/LocalidadesMoreno_4.js"></script>
+<script src="layers/BarriosPopulares_5.js"></script>
+<script src="layers/CallesMloreno_6.js"></script>
+<script src="layers/CursodeAgua_7.js"></script>
+<script src="layers/CallesNombradasenHonoraLosDesaparecidos_8.js"></script>
+
+<script src="styles/Reserva_Equipamientos_3_style.js"></script>
+<script src="styles/LocalidadesMoreno_4_style.js"></script>
+<script src="styles/BarriosPopulares_5_style.js"></script>
+<script src="styles/CallesMloreno_6_style.js"></script>
+<script src="styles/CursodeAgua_7_style.js"></script>
+<script src="styles/CallesNombradasenHonoraLosDesaparecidos_8_style.js"></script>
+
+<script src="./layers/layers.js"></script>
+<script src="./resources/Autolinker.min.js"></script>
+<script src="./resources/qgis2web.js"></script>
+
+<script>
+
+/* ROTAR FLECHA SEGUN EL MAPA */
+
+map.getView().on('change:rotation', function(){
+
+var rotation = map.getView().getRotation();
+
+var grados = rotation * (180 / Math.PI);
+
+document.getElementById("flecha-norte").style.transform =
+"rotate(" + (-grados) + "deg)";
+
+});
+
+/* AJUSTE MOVIL */
+
+function ajustarMapaMovil(){
+
+if (window.innerWidth <= 768){
+
+var view = map.getView();
+
+view.setZoom(view.getZoom() - 0.7);
+
+var center = view.getCenter();
+center[0] = center[0] - 500;
+view.setCenter(center);
+
+}
+
+}
+
+window.addEventListener("load", ajustarMapaMovil);
+
+</script>
+
+</body>
 </html>
+          
+  
